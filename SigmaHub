@@ -114,8 +114,8 @@ end
 local function tweenToNextPart(player)
 	local targetPart = parts[currentIndex]
 	if isTweening and targetPart then
-		currentIndex += 1
-		local hrp = player.Character and player.Character:WaitForChild("HumanoidRootPart", 5)
+		currentIndex = currentIndex + 1
+		local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 
 		if hrp then
 			print("Tweening to: " .. targetPart.Name)
@@ -131,17 +131,19 @@ local function tweenToNextPart(player)
 	end
 end
 
-local player = game.Players.LocalPlayer
-player.CharacterAdded:Connect(function(character)
-	print("Character added: " .. character.Name)
-	wait(1)
-	getCoinsParts()
-	if #parts > 0 then
-		isTweening = true
-		tweenToNextPart(player)
-	else
-		warn("No Coin_Server parts found.")
-	end
+-- Handle player joining and starting the tweening process
+game.Players.PlayerAdded:Connect(function(player)
+	player.CharacterAdded:Connect(function(character)
+		print("Character added: " .. character.Name)
+		wait(1)
+		getCoinsParts()
+		if #parts > 0 then
+			isTweening = true
+			tweenToNextPart(player)
+		else
+			warn("No Coin_Server parts found.")
+		end
+	end)
 end)
   end,
 })
